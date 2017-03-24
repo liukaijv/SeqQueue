@@ -26,7 +26,7 @@ const EVENT_ERROR = 'error';
  * node.js是异步执行模型，所以任务的执行顺序并不能得到保证
  * SeqQueue使用队列的FIFO特性来保证任务的执行顺序
  * 且可以设定任务的超时时间及超时回调
- * 主要参考https://github.com/changchang/seq-queue.git
+ * 参考https://github.com/changchang/seq-queue.git
  */
 export class SeqQueue extends EventEmitter {
     /**默认超时时间 */
@@ -46,7 +46,7 @@ export class SeqQueue extends EventEmitter {
             throw new Error('timeout should be > 0.');
         }
         this.timeout = timeout || 3000;
-        this.id = 1;
+        this.id = 0;
         this.status = STATUS.IDLE;
         this.queue = [];
     }

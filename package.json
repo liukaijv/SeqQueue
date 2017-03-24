@@ -2,7 +2,7 @@
   "name": "SeqQueue",
   "author": "miyes <miyes90@163.com>",
   "version": "0.0.1",
-  "description": "keep task to be executed in order.",
+  "description": "保证任务的执行顺序.",
   "homepage": "https://github.com/miyes/SeqQueue.git",
   "repository": {
     "type": "git",
