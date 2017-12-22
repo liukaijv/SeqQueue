@@ -1,4 +1,6 @@
-import { EventEmitter } from 'events';
+import {EventEmitter} from 'events';
+
+const isPromise = (obj: any) => !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
 
 /**任务队列状态 */
 enum STATUS {
@@ -88,14 +90,19 @@ export class SeqQueue extends EventEmitter {
             }
         }, task.timeout);
 
+        let done = () => {
+            let res = task.id === self.id;
+            self.exec(task.id);
+            return res;
+        };
+
         try {
-            task.func({
-                done: () => {
-                    let res = task.id === self.id;
-                    self.exec(task.id);
-                    return res;
-                }
+            let promise: any = task.func({
+                done: done
             });
+            if (isPromise(promise)) {
+                promise.then(done).catch(done);
+            }
         } catch (error) {
             console.log('task exception: ' + error.message);
             this.emit(EVENT_ERROR, error, task);
@@ -121,7 +128,7 @@ export class SeqQueue extends EventEmitter {
             throw new Error('timeout should be > 0.');
         }
 
-        this.queue.push({ func: func, timeout: timeout || this.timeout, onTimeoutFunc: onTimeoutFunc });
+        this.queue.push({func: func, timeout: timeout || this.timeout, onTimeoutFunc: onTimeoutFunc});
 
         if (this.status === STATUS.IDLE) {
             this.status = STATUS.BUSY;
